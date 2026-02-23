@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { FlightOption, Fare } from "@/types/flight";
 
 interface Props {
@@ -23,6 +23,39 @@ const formatDuration = (mins: number) => {
 const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
 
+// ── Airline logo with graceful fallback ──────────────────────
+function AirlineLogo({ code }: { code: string }) {
+    const imgRef = useRef<HTMLImageElement>(null);
+    const fallbackRef = useRef<HTMLDivElement>(null);
+
+    const handleError = () => {
+        if (imgRef.current) imgRef.current.style.display = "none";
+        if (fallbackRef.current) fallbackRef.current.style.display = "flex";
+    };
+
+    return (
+        <div className="relative w-10 h-10 flex-shrink-0">
+            <img
+                ref={imgRef}
+                src={`https://pics.avs.io/40/40/${code}.png`}
+                alt={`${code} logo`}
+                width={40}
+                height={40}
+                className="w-10 h-10 rounded-full object-contain border border-[var(--border)] bg-white p-0.5"
+                onError={handleError}
+            />
+            <div
+                ref={fallbackRef}
+                style={{ display: "none" }}
+                className="absolute inset-0 w-10 h-10 rounded-full bg-[var(--surface)] border border-[var(--border)] items-center justify-center text-xs font-bold text-[var(--brand)]"
+            >
+                {code}
+            </div>
+        </div>
+    );
+}
+
+// ── Main Component ────────────────────────────────────────────
 export default function FlightCard({ flight, searchId, journeyKey, passengers = 1, onSelect }: Props) {
     const [selectedFare, setSelectedFare] = useState<Fare>(flight.fares[0]);
     const [selecting, setSelecting] = useState(false);
@@ -56,16 +89,27 @@ export default function FlightCard({ flight, searchId, journeyKey, passengers = 
         <div className="bg-white border border-[var(--border)] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
             {/* Flight summary row */}
             <div className="flex items-center justify-between gap-4 flex-wrap">
+                {/* Airline logos + info */}
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-xs font-bold text-[var(--brand)]">
-                        {flight.airlines[0]}
+                    {/* Stacked logos for codeshare flights */}
+                    <div className="flex items-center">
+                        {flight.airlines.slice(0, 2).map((code, idx) => (
+                            <div
+                                key={code}
+                                style={{ marginLeft: idx > 0 ? "-10px" : 0, zIndex: 2 - idx }}
+                                className="relative"
+                            >
+                                <AirlineLogo code={code} />
+                            </div>
+                        ))}
                     </div>
                     <div>
-                        <p className="text-xs text-[var(--text-secondary)]">{flight.airlines.join(", ")}</p>
+                        <p className="text-xs font-medium text-[var(--text-primary)]">{flight.airlines.join(", ")}</p>
                         <p className="text-xs text-[var(--text-secondary)]">{flight.legs.map(l => l.fltNo).join(" · ")}</p>
                     </div>
                 </div>
 
+                {/* Route timeline */}
                 <div className="flex items-center gap-6">
                     <div className="text-center">
                         <p className="text-xl font-bold">{formatTime(flight.departure)}</p>
@@ -94,6 +138,7 @@ export default function FlightCard({ flight, searchId, journeyKey, passengers = 
                     </div>
                 </div>
 
+                {/* Price */}
                 <div className="text-right">
                     <p className="text-2xl font-bold text-[var(--brand)]">
                         ₹{perAdult.toLocaleString("en-IN")}
@@ -114,8 +159,8 @@ export default function FlightCard({ flight, searchId, journeyKey, passengers = 
                         key={fare.fareId}
                         onClick={() => setSelectedFare(fare)}
                         className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${selectedFare.fareId === fare.fareId
-                            ? "bg-[var(--brand)] text-white border-[var(--brand)]"
-                            : "bg-white text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--brand)]"
+                                ? "bg-[var(--brand)] text-white border-[var(--brand)]"
+                                : "bg-white text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--brand)]"
                             }`}
                     >
                         {fare.fareIdentifiers.brandName}
