@@ -7,6 +7,7 @@ interface Props {
     flight: FlightOption;
     searchId: string;
     journeyKey: string;
+    passengers?: number;
     onSelect: (selectionId: string, summary: object) => void;
 }
 
@@ -22,9 +23,12 @@ const formatDuration = (mins: number) => {
 const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
 
-export default function FlightCard({ flight, searchId, journeyKey, onSelect }: Props) {
+export default function FlightCard({ flight, searchId, journeyKey, passengers = 1, onSelect }: Props) {
     const [selectedFare, setSelectedFare] = useState<Fare>(flight.fares[0]);
     const [selecting, setSelecting] = useState(false);
+
+    const perAdult = Number(selectedFare.price.pricePerAdult);
+    const totalPrice = perAdult * passengers;
 
     const handleSelect = async () => {
         setSelecting(true);
@@ -92,9 +96,14 @@ export default function FlightCard({ flight, searchId, journeyKey, onSelect }: P
 
                 <div className="text-right">
                     <p className="text-2xl font-bold text-[var(--brand)]">
-                        ₹{Number(selectedFare.price.pricePerAdult).toLocaleString("en-IN")}
+                        ₹{perAdult.toLocaleString("en-IN")}
                     </p>
                     <p className="text-xs text-[var(--text-secondary)]">per adult</p>
+                    {passengers > 1 && (
+                        <p className="text-xs font-medium text-[var(--text-secondary)] mt-0.5">
+                            Total: ₹{totalPrice.toLocaleString("en-IN")}
+                        </p>
+                    )}
                 </div>
             </div>
 
@@ -105,8 +114,8 @@ export default function FlightCard({ flight, searchId, journeyKey, onSelect }: P
                         key={fare.fareId}
                         onClick={() => setSelectedFare(fare)}
                         className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${selectedFare.fareId === fare.fareId
-                                ? "bg-[var(--brand)] text-white border-[var(--brand)]"
-                                : "bg-white text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--brand)]"
+                            ? "bg-[var(--brand)] text-white border-[var(--brand)]"
+                            : "bg-white text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--brand)]"
                             }`}
                     >
                         {fare.fareIdentifiers.brandName}
