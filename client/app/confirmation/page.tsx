@@ -18,6 +18,7 @@ interface BookingResult {
         title: string;
         firstName: string;
         lastName: string;
+        gender: string;
         passportNumber: string;
         nationality: string;
     }[];
@@ -118,7 +119,12 @@ export default function ConfirmationPage() {
                                 <p className="text-sm font-semibold">
                                     {t.title} {t.firstName} {t.lastName}
                                 </p>
-                                <p className="text-xs text-[var(--text-secondary)]">{t.type} · {t.nationality} · {t.passportNumber}</p>
+                                <p className="text-xs text-[var(--text-secondary)]">
+                                    {t.type}
+                                    {t.gender ? ` · ${t.gender === "M" ? "Male" : t.gender === "F" ? "Female" : "Unspecified"}` : ""}
+                                    {t.nationality ? ` · ${t.nationality}` : ""}
+                                    {t.passportNumber ? ` · ${t.passportNumber}` : ""}
+                                </p>
                             </div>
                         </div>
                     ))}

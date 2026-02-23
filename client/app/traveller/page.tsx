@@ -17,6 +17,11 @@ interface FlightSummary {
 
 const TITLES = ["Mr", "Mrs", "Ms", "Dr"];
 const NATIONALITIES = ["IN", "US", "GB", "AE", "SG", "AU"];
+const GENDERS = [
+    { value: "M", label: "Male" },
+    { value: "F", label: "Female" },
+    { value: "U", label: "Unspecified" },
+] as const;
 
 const emptyTraveller = {
     type: "ADT" as const,
@@ -24,6 +29,7 @@ const emptyTraveller = {
     firstName: "",
     lastName: "",
     dateOfBirth: "",
+    gender: "M" as "M" | "F" | "U",
     passportNumber: "",
     passportExpiry: "",
     nationality: "IN",
@@ -39,6 +45,7 @@ export default function TravellerPage() {
         firstName: string;
         lastName: string;
         dateOfBirth: string;
+        gender: "M" | "F" | "U";
         passportNumber: string;
         passportExpiry: string;
         nationality: string;
@@ -174,26 +181,50 @@ export default function TravellerPage() {
                                 </select>
                             </div>
 
+                            {/* Gender */}
+                            <div className="flex flex-col gap-1 sm:col-span-2">
+                                <label className="text-xs font-medium text-[var(--text-secondary)]">Gender</label>
+                                <div className="flex gap-2">
+                                    {GENDERS.map(({ value, label }) => (
+                                        <button
+                                            key={value}
+                                            type="button"
+                                            onClick={() => setTraveller((t) => ({ ...t, gender: value }))}
+                                            className={`flex-1 py-2.5 rounded-lg text-sm font-medium border transition-colors cursor-pointer ${traveller.gender === value
+                                                    ? "bg-[var(--brand)] text-white border-[var(--brand)]"
+                                                    : "bg-white text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--brand)]"
+                                                }`}
+                                        >
+                                            {label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
                             <div className="flex flex-col gap-1">
-                                <label className="text-xs font-medium text-[var(--text-secondary)]">Passport Number</label>
+                                <label className="text-xs font-medium text-[var(--text-secondary)]">
+                                    Passport Number
+                                    <span className="ml-1 text-[var(--text-secondary)] font-normal">(optional)</span>
+                                </label>
                                 <input
                                     type="text"
                                     value={traveller.passportNumber}
                                     onChange={(e) => setTraveller((t) => ({ ...t, passportNumber: e.target.value.toUpperCase() }))}
                                     placeholder="A1234567"
                                     className="border border-[var(--border)] rounded-lg px-3 py-2.5 text-sm"
-                                    required
                                 />
                             </div>
 
                             <div className="flex flex-col gap-1">
-                                <label className="text-xs font-medium text-[var(--text-secondary)]">Passport Expiry</label>
+                                <label className="text-xs font-medium text-[var(--text-secondary)]">
+                                    Passport Expiry
+                                    <span className="ml-1 text-[var(--text-secondary)] font-normal">(optional)</span>
+                                </label>
                                 <input
                                     type="date"
                                     value={traveller.passportExpiry}
                                     onChange={(e) => setTraveller((t) => ({ ...t, passportExpiry: e.target.value }))}
                                     className="border border-[var(--border)] rounded-lg px-3 py-2.5 text-sm"
-                                    required
                                 />
                             </div>
                         </div>

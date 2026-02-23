@@ -6,8 +6,9 @@ export interface ITraveller {
     firstName: string;
     lastName: string;
     dateOfBirth: string;
-    passportNumber: string;
-    passportExpiry: string;
+    gender: "M" | "F" | "U";
+    passportNumber?: string;
+    passportExpiry?: string;
     nationality: string;
 }
 
@@ -35,8 +36,9 @@ const TravellerSchema = new Schema<ITraveller>({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     dateOfBirth: { type: String, required: true },
-    passportNumber: { type: String, required: true },
-    passportExpiry: { type: String, required: true },
+    gender: { type: String, enum: ["M", "F", "U"], required: true },
+    passportNumber: { type: String, required: false, default: "" },
+    passportExpiry: { type: String, required: false, default: "" },
     nationality: { type: String, required: true },
 });
 
