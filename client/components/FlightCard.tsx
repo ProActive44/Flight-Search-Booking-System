@@ -23,7 +23,7 @@ const formatDuration = (mins: number) => {
 const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
 
-// ── Airline logo with graceful fallback ──────────────────────
+// ── Airline logo with fallback ──────────────────────
 function AirlineLogo({ code }: { code: string }) {
     const imgRef = useRef<HTMLImageElement>(null);
     const fallbackRef = useRef<HTMLDivElement>(null);
