@@ -11,30 +11,17 @@ dotenv.config();
 const app: Application = express();
 const PORT = process.env.PORT || 8000;
 
-// Allowed origins — ENV var lets you add more without code changes
-const ALLOWED_ORIGINS = [
-    "https://flight-search-booking-system.vercel.app",
-    "http://localhost:3000",
-    "http://localhost:3001",
-    process.env.CORS_ORIGIN,           // extra origin from env if set
-].filter(Boolean) as string[];
-
 const corsOptions: cors.CorsOptions = {
-    origin: (origin, callback) => {
-        // Allow requests with no origin (curl, Postman, server-to-server)
-        if (!origin) return callback(null, true);
-        if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
-        callback(new Error(`CORS: origin '${origin}' not allowed`));
-    },
+    origin: "*",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
 };
 
-// Handle preflight OPTIONS for every route first
+// Handle preflight OPTIONS for every route
 app.options("*", cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(express.json());
+
 
 
 app.get("/api/health", (_req: Request, res: Response) => {
