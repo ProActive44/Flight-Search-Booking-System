@@ -65,8 +65,9 @@ export default function FlightCard({ flight, searchId, journeyKey, passengers = 
 
     const handleSelect = async () => {
         setSelecting(true);
+        const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
         try {
-            const res = await fetch("http://localhost:8000/api/flight/select", {
+            const res = await fetch(`${BASE_URL}/flight/select`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -159,8 +160,8 @@ export default function FlightCard({ flight, searchId, journeyKey, passengers = 
                         key={fare.fareId}
                         onClick={() => setSelectedFare(fare)}
                         className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${selectedFare.fareId === fare.fareId
-                                ? "bg-[var(--brand)] text-white border-[var(--brand)]"
-                                : "bg-white text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--brand)]"
+                            ? "bg-[var(--brand)] text-white border-[var(--brand)]"
+                            : "bg-white text-[var(--text-secondary)] border-[var(--border)] hover:border-[var(--brand)]"
                             }`}
                     >
                         {fare.fareIdentifiers.brandName}
