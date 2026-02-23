@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db";
 import searchRouter from "./routes/search.routes";
 import flightRouter from "./routes/flight.routes";
+import bookingRouter from "./routes/booking.routes";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.get("/api/health", (_req: Request, res: Response) => {
 
 app.use("/api/search", searchRouter);
 app.use("/api/flight", flightRouter);
+app.use("/api/booking", bookingRouter);
 
 const startServer = async (): Promise<void> => {
     await connectDB();
