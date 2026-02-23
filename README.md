@@ -2,6 +2,15 @@
 
 A full-stack flight booking app built with Next.js, Express, TypeScript, and MongoDB. The idea is to simulate what happens under the hood when you search and book a flight — from the search filters all the way to a booking confirmation with a reference ID.
 
+## Live Demo
+
+| | Link |
+|---|---|
+| **Frontend** | https://flight-search-booking-system.vercel.app/ |
+| **Backend API** | https://flight-search-booking-system.onrender.com/api |
+
+> The backend is hosted on Render's free tier, which spins down after inactivity. The first request after a period of no use can take **up to 1 minute** to respond while the server wakes up. Subsequent requests are fast.
+
 ---
 
 ## What it does
