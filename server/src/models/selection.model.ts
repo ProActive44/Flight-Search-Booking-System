@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface ISelection extends Document {
+    _id: mongoose.Types.ObjectId;
     searchId: string;
     journeyKey: string;
     selectedFlight: Record<string, unknown>;
